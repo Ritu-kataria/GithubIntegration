@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.shortcuts import render, HttpResponse
 
 # Create your views here.
+def login(request):
+    return HttpResponse('This is login page')
+
 def getIssues(request):
-    return HttpResponse("This is a function to fetch issues")
+    return HttpResponse('This is getIssues page')

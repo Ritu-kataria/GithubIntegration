@@ -1,6 +1,8 @@
-from django.conf.urls import url
-from  ManageIssues import views
+from django import views
+from django.urls import path
+from ManageIssues import views
 
 urlpatterns = [
-    url(r'^', views.getIssues, name='getIssues'),
+    path('', views.login, name='login'),
+    path('Issues', views.getIssues, name='Issues'),
 ]
