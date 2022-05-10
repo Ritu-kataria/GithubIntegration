@@ -1,4 +1,4 @@
-"""GithubIntegrationApp URL Configuration
+"""Github_Integration_Backend URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -19,6 +19,6 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('ManageIssues.urls')),
+    path('api/', include('Manage_Issues.urls')),
     path('auth/', obtain_auth_token),
 ]
