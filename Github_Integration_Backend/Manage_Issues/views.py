@@ -16,18 +16,23 @@ class UserViewSet(viewsets.ModelViewSet):
 # Fetching issues from api and storing in db
 def Get_Issues_From_Api():
     """
-    This function is used to return issues fetched from github rest api
+    This function is used to return issues fetched from all pages of github rest api
     """
-    url = "https://api.github.com/search/issues?q=author:davidism%20repo:pallets/click"
-    response = requests.request("GET", url=url)
-    data_in_json = json.loads(response.text)
-    return data_in_json
+    per_page = 100
+    issues_data = []
+    for page in range(1,3):
+        url = f"https://api.github.com/search/issues?q=author:davidism%20repo:pallets/click&per_page={per_page}&page={page}"
+        response = requests.request("GET", url=url)
+        data = json.loads(response.text)
+        issues_data.extend(data['items'])
+
+    return issues_data
 
 def Add_Issues_Into_DB():
     """
     This function is used to add fetched issues into database
     """
-    issues = Get_Issues_From_Api()['items']
+    issues = Get_Issues_From_Api()
     for issue in issues:
         issue_data = Issues(
             issue_id = issue['id'],
