@@ -1,2 +1,4 @@
 Github_Integration_Backend/db.sqlite3
 Github_Integration_Backend/Github_Integration_Backend/settings.py
+Github_Integration_Backend/Github_Integration_Backend/__pycache__
+Github_Integration_Backend/Manage_Issues/__pycache__
