@@ -9,8 +9,6 @@ class Issues(models.Model):
     issue_id = models.IntegerField(_('Issue ID'), unique=True, db_index=True)
     title = models.CharField(_('Title'), max_length=255, null=True)
     number = models.IntegerField(_('Number'), null=True)
-    # label = models.CharField(_('Label'), null=True, max_length=255)
-    # assignee = models.CharField(_('Assignee'), null=True, max_length=120)
     state = models.CharField(_('State'),  max_length=255)
     created_at = models.DateTimeField(_('Created At'), help_text="Date when issue was created")
     updated_at = models.DateTimeField(_('Updated At'), help_text="Date when issue was modified", null=True)
@@ -25,7 +23,7 @@ class Issues(models.Model):
 
 class Labels(models.Model):
     label_id = models.IntegerField(_('Label ID'), unique=True, db_index=True)
-    issue = models.ForeignKey(Issues, related_name="", null=True, on_delete=models.CASCADE)
+    issue = models.ForeignKey(Issues, related_name="issue_labels", null=True, on_delete=models.CASCADE)
     name = models.CharField(_('Name'), max_length=255, null=True)
     description = models.CharField(_('Description'), max_length=300, null=True)
 
@@ -38,7 +36,7 @@ class Labels(models.Model):
 
 class Assignees(models.Model):
     assignee_id = models.IntegerField(_('Assignee ID'), unique=True, db_index=True)
-    issue = models.ForeignKey(Issues, related_name="", null=True, on_delete=models.CASCADE)
+    issue = models.ForeignKey(Issues, related_name="issue_assignees", null=True, on_delete=models.CASCADE)
     name = models.CharField(_('Name'), max_length=255, null=True)
 
     class Meta:
