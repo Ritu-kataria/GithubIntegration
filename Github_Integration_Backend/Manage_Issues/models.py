@@ -23,7 +23,7 @@ class Issues(models.Model):
 
 class Labels(models.Model):
     label_id = models.IntegerField(_('Label ID'), unique=True, db_index=True)
-    reference_id = models.IntegerField(_('Reference ID'), unique=True)
+    reference_id = models.IntegerField(_('Reference ID'), default=None)
     issue = models.ForeignKey(Issues, related_name="issue_labels", null=True, on_delete=models.CASCADE)
     name = models.CharField(_('Name'), max_length=255, null=True)
     description = models.CharField(_('Description'), max_length=300, null=True)
@@ -37,7 +37,7 @@ class Labels(models.Model):
 
 class Assignees(models.Model):
     assignee_id = models.IntegerField(_('Assignee ID'), unique=True, db_index=True)
-    reference_id = models.IntegerField(_('Reference ID'), unique=True)
+    reference_id = models.IntegerField(_('Reference ID'), default=None)
     issue = models.ForeignKey(Issues, related_name="issue_assignees", null=True, on_delete=models.CASCADE)
     name = models.CharField(_('Name'), max_length=255, null=True)
 

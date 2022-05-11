@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from .serializers import UserSerializer
 import requests
 import json
-from .models import Issues
+from .models import Issues, Labels, Assignees
 
 # Create your views here.
 # Login Api
@@ -28,11 +28,12 @@ def Get_Issues_From_Api():
 
     return issues_data
 
+issues = Get_Issues_From_Api()
+
 def Add_Issues_Into_DB():
     """
     This function is used to add fetched issues into database
     """
-    issues = Get_Issues_From_Api()
     for issue in issues:
         issue_data = Issues(
             issue_id = issue['id'],
@@ -51,4 +52,75 @@ def Get_Labels_From_Api():
     """
     This function is used to return labels fetched from github rest api
     """
-    pass
+    labels = []
+    for issue in issues:
+        for label in issue['labels']:
+            label['reference_id'] = issue['id']
+            labels.append(label)
+
+    # Removing duplicate entries
+    labels_set = set()
+    result = []
+    for d in labels:
+        h = d.copy()
+        h.pop('reference_id')
+        h = tuple(h.items())
+        if h not in labels_set:
+            result.append(d)
+            labels_set.add(h)
+    return result
+
+def Add_labels_Into_DB():
+    """
+    This function is used to add labels into database
+    """
+    labels = Get_Labels_From_Api()
+    for label in labels:
+        label_data = Labels(
+            label_id = label['id'],
+            reference_id = label['reference_id'],
+            issue = Issues.objects.get(issue_id=label['reference_id']),
+            name = label['name'],
+            description = label['description'],
+        )
+        label_data.save()
+        all_labels = Issues.objects.all().order_by('-id')
+    return all_labels
+
+def Get_Assignees_From_Api():
+    """
+    This function is used to return assignee fetched from github rest api
+    """
+    assignees = []
+    for issue in issues:
+        for assignee in issue['assignees']:
+            assignee['reference_id'] = issue['id']
+            assignees.append(assignee)
+    
+    # Removing duplicate entries
+    assignee_set = set()
+    result = []
+    for d in assignees:
+        h = d.copy()
+        h.pop('reference_id')
+        h = tuple(h.items())
+        if h not in assignee_set:
+            result.append(d)
+            assignee_set.add(h)
+    return result
+
+def Add_assignees_Into_DB():
+    """
+    This function is used to add labels into database
+    """
+    assignees = Get_Assignees_From_Api()
+    for assignee in assignees:
+        assignee_data = Assignees(
+            assignee_id = assignee['id'],
+            reference_id = assignee['reference_id'],
+            issue = Issues.objects.get(issue_id=assignee['reference_id']),
+            name = assignee['login'],
+        )
+        assignee_data.save()
+        all_assignees = Issues.objects.all().order_by('-id')
+    return all_assignees
