@@ -10,5 +10,5 @@ router.register('users', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('issues', views.Display_Issues_With_Labels_Assignees, name='Issues'),
+    path('issues', views.display_issues_with_labels_assignees, name='Issues'),
 ]

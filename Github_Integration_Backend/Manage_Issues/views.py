@@ -18,7 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 # Fetching issues from api and storing in db
-def Get_Issues_From_Api():
+def get_issues_from_api():
     """
     This function is used to return issues fetched from all pages of github rest api
     """
@@ -32,9 +32,9 @@ def Get_Issues_From_Api():
 
     return issues_data
 
-issues_data = Get_Issues_From_Api()
+issues_data = get_issues_from_api()
 
-def Add_Issues_Into_DB():
+def add_issues_into_db():
     """
     This function is used to add fetched issues into database
     """
@@ -52,7 +52,7 @@ def Add_Issues_Into_DB():
         all_issues = Issues.objects.all().order_by('-id')
     return all_issues
 
-def Get_Labels_From_Api():
+def get_labels_from_api():
     """
     This function is used to return labels fetched from github rest api
     """
@@ -65,20 +65,20 @@ def Get_Labels_From_Api():
     # Removing duplicate entries
     labels_set = set()
     result = []
-    for d in labels:
-        h = d.copy()
-        h.pop('reference_id')
-        h = tuple(h.items())
-        if h not in labels_set:
-            result.append(d)
-            labels_set.add(h)
+    for label in labels:
+        temp_label = label.copy()
+        temp_label.pop('reference_id')
+        temp_label = tuple(temp_label.items())
+        if temp_label not in labels_set:
+            result.append(label)
+            labels_set.add(temp_label)
     return result
 
-def Add_labels_Into_DB():
+def add_labels_into_db():
     """
     This function is used to add labels into database
     """
-    labels = Get_Labels_From_Api()
+    labels = get_labels_from_api()
     for label in labels:
         label_data = Labels(
             label_id = label['id'],
@@ -88,10 +88,11 @@ def Add_labels_Into_DB():
             description = label['description'],
         )
         label_data.save()
-        all_labels = Issues.objects.all().order_by('-id')
+        
+    all_labels = Issues.objects.all().order_by('-id')
     return all_labels
 
-def Get_Assignees_From_Api():
+def get_assignees_from_api():
     """
     This function is used to return assignee fetched from github rest api
     """
@@ -104,20 +105,20 @@ def Get_Assignees_From_Api():
     # Removing duplicate entries
     assignee_set = set()
     result = []
-    for d in assignees:
-        h = d.copy()
-        h.pop('reference_id')
-        h = tuple(h.items())
-        if h not in assignee_set:
-            result.append(d)
-            assignee_set.add(h)
+    for assignee in assignees:
+        temp_assignee = assignee.copy()
+        temp_assignee.pop('reference_id')
+        temp_assignee = tuple(temp_assignee.items())
+        if temp_assignee not in assignee_set:
+            result.append(assignee)
+            assignee_set.add(temp_assignee)
     return result
 
-def Add_assignees_Into_DB():
+def add_assignees_into_db():
     """
     This function is used to add labels into database
     """
-    assignees = Get_Assignees_From_Api()
+    assignees = get_assignees_from_api()
     for assignee in assignees:
         assignee_data = Assignees(
             assignee_id = assignee['id'],
@@ -131,18 +132,11 @@ def Add_assignees_Into_DB():
 
 # Api for returning response of issues, labels and assignees
 @api_view(['GET'])
-def Display_Issues_With_Labels_Assignees(request):
+def display_issues_with_labels_assignees(request):
     issues_object = Issues.objects.all()
     labels_object = Labels.objects.all()
     assignees_object = Assignees.objects.all()
     issues_serializer_object = IssuesSerializer(issues_object, many=True)
     labels_serializer_object = LabelsSerializer(labels_object, many=True)
     assignees_serializer_object = AssigneesSerializer(assignees_object, many=True)
-    # result = issues_serializer_object.data + labels_serializer_object.data + assignees_serializer_object.data
-    # return Response(
-    #     issues=issues_serializer_object.data, 
-    #     labels=labels_serializer_object.data,
-    #     assignees = assignees_serializer_object.data,
-    #     status=status.HTTP_200_OK
-    # )
     return Response({'issues': issues_serializer_object.data, 'labels': labels_serializer_object.data, 'assignees': assignees_serializer_object.data, 'status': status.HTTP_200_OK})
