@@ -1,11 +1,15 @@
+from ast import Return
 from turtle import title
+from urllib import response
 from django.shortcuts import render, HttpResponse
 from rest_framework import viewsets, status
 from django.contrib.auth.models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, IssuesSerializer, LabelsSerializer, AssigneesSerializer
 import requests
 import json
 from .models import Issues, Labels, Assignees
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 # Create your views here.
 # Login Api
@@ -28,13 +32,13 @@ def Get_Issues_From_Api():
 
     return issues_data
 
-issues = Get_Issues_From_Api()
+issues_data = Get_Issues_From_Api()
 
 def Add_Issues_Into_DB():
     """
     This function is used to add fetched issues into database
     """
-    for issue in issues:
+    for issue in issues_data:
         issue_data = Issues(
             issue_id = issue['id'],
             title = issue['title'],
@@ -53,7 +57,7 @@ def Get_Labels_From_Api():
     This function is used to return labels fetched from github rest api
     """
     labels = []
-    for issue in issues:
+    for issue in issues_data:
         for label in issue['labels']:
             label['reference_id'] = issue['id']
             labels.append(label)
@@ -92,7 +96,7 @@ def Get_Assignees_From_Api():
     This function is used to return assignee fetched from github rest api
     """
     assignees = []
-    for issue in issues:
+    for issue in issues_data:
         for assignee in issue['assignees']:
             assignee['reference_id'] = issue['id']
             assignees.append(assignee)
@@ -124,3 +128,21 @@ def Add_assignees_Into_DB():
         assignee_data.save()
         all_assignees = Issues.objects.all().order_by('-id')
     return all_assignees
+
+# Api for returning response of issues, labels and assignees
+@api_view(['GET'])
+def Display_Issues_With_Labels_Assignees(request):
+    issues_object = Issues.objects.all()
+    labels_object = Labels.objects.all()
+    assignees_object = Assignees.objects.all()
+    issues_serializer_object = IssuesSerializer(issues_object, many=True)
+    labels_serializer_object = LabelsSerializer(labels_object, many=True)
+    assignees_serializer_object = AssigneesSerializer(assignees_object, many=True)
+    # result = issues_serializer_object.data + labels_serializer_object.data + assignees_serializer_object.data
+    # return Response(
+    #     issues=issues_serializer_object.data, 
+    #     labels=labels_serializer_object.data,
+    #     assignees = assignees_serializer_object.data,
+    #     status=status.HTTP_200_OK
+    # )
+    return Response({'issues': issues_serializer_object.data, 'labels': labels_serializer_object.data, 'assignees': assignees_serializer_object.data, 'status': status.HTTP_200_OK})
