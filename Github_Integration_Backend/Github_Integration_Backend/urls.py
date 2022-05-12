@@ -17,6 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 
+admin.site.site_header = "Github Integration Admin"
+admin.site.site_title = "Github Integration"
+admin.site.index_title = "Welcome to Github Integration"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('Manage_Issues.urls')),
