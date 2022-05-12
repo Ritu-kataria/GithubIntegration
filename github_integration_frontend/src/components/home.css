@@ -1,0 +1,20 @@
+.home {
+    height: 100vh; 
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+        url('https://github.githubassets.com/images/modules/site/social-cards/github-social.png');
+    background-size: cover; 
+    background-position: center; 
+    position: relative;
+    width: 100;
+}
+
+#filled:hover {
+    background-color: white !important; 
+    color: #1b1b1b !important;
+  }
+  
+  #outlined:hover {
+    background-color: #1b1b1b; 
+    color: white;
+  }
