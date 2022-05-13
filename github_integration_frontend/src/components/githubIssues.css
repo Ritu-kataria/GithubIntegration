@@ -1,0 +1,47 @@
+.col-md-4 {
+    margin-bottom: 30px;
+  }
+  
+  .issuecard {
+    padding: 30px;
+    border: solid 1px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+  }
+  .issuecard:hover {
+    box-shadow: 0 0 12px 3px rgba(0, 0, 0, 0.08);
+  }
+  .issuecard-title {
+    margin-top: 20px;
+    font-size: 15px;
+  }
+
+  .issuecard-id {
+    margin-top: 5px;
+    font-weight: bold;
+  }
+
+  .issuecard-text {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  .issuecard-text .fa {
+    font-size: 26px;
+  }
+  .avatar {
+    width: 140px;
+    margin: auto;
+  }
+  .avatar img {
+    border: solid 6px transparent;
+    border-radius: 50%;
+  }
+  
+  footer p {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  @media (min-width: 1200px) {
+    .issuescontainer {
+      max-width: 1040px;
+    }
+  }
